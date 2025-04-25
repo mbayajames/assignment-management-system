@@ -1,50 +1,51 @@
 import React, { useState, useEffect } from 'react';
-import { FaPlus } from 'react-icons/fa';
-
-// Mock API for assignments
-const mockApi = {
-  getUsers: () => Promise.resolve([
-    { id: 2, username: 'student1', role: 'student' },
-    { id: 3, username: 'student2', role: 'student' },
-  ]),
-  getAssignments: (role, userId) => {
-    const allAssignments = [
-      { id: 1, title: 'Math Assignment 1', description: 'Solve 10 algebra problems', dueDate: '2025-05-01', assignedTo: [2, 3] },
-    ];
-    if (role === 'admin') return Promise.resolve(allAssignments);
-    return Promise.resolve(allAssignments.filter(a => a.assignedTo.includes(userId)));
-  },
-  createAssignment: (title, description, dueDate, assignedTo) => Promise.resolve({
-    id: 2,
-    title,
-    description,
-    dueDate,
-    assignedTo,
-  }),
-};
+import { FaPlus, FaBookOpen, FaFileAlt, FaExclamationCircle, FaCheckCircle, FaUser } from 'react-icons/fa';
+import LoadingSpinner from './LoadingSpinner';
 
 const Assignment = ({ role, userId }) => {
   const [assignments, setAssignments] = useState([]);
-  const [newAssignment, setNewAssignment] = useState({ 
-    title: '', 
-    description: '', 
-    dueDate: '', 
-    assignedTo: [] 
+  const [newAssignment, setNewAssignment] = useState({
+    title: '',
+    description: '',
+    dueDate: '',
+    assignedTo: [],
   });
   const [students, setStudents] = useState([]);
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Mock data
+  const mockData = {
+    assignments: [
+      { id: 1, title: 'Math Assignment', description: 'Solve problems 1-10', dueDate: '2025-05-01', assignedTo: [2, 3] },
+      { id: 2, title: 'Science Project', description: 'Create a model', dueDate: '2025-05-10', assignedTo: [2] },
+    ],
+    users: [
+      { id: 2, username: 'student1', role: 'student' },
+      { id: 3, username: 'student2', role: 'student' },
+    ],
+  };
+  let nextAssignmentId = 3;
 
   useEffect(() => {
     const loadData = async () => {
+      setIsLoading(true);
       try {
-        const assignmentsData = await mockApi.getAssignments(role, userId);
+        // Simulate async data fetch
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        const assignmentsData =
+          role === 'admin'
+            ? mockData.assignments
+            : mockData.assignments.filter((a) => a.assignedTo.includes(userId));
         setAssignments(assignmentsData);
+
         if (role === 'admin') {
-          const users = await mockApi.getUsers();
-          setStudents(users);
+          setStudents(mockData.users);
         }
       } catch (err) {
         setError('Failed to load data. Please try refreshing the page.');
+      } finally {
+        setIsLoading(false);
       }
     };
     loadData();
@@ -52,16 +53,20 @@ const Assignment = ({ role, userId }) => {
 
   const handleCreateAssignment = async (e) => {
     e.preventDefault();
+    setError('');
     try {
-      const createdAssignment = await mockApi.createAssignment(
-        newAssignment.title,
-        newAssignment.description,
-        newAssignment.dueDate,
-        newAssignment.assignedTo
-      );
+      // Simulate async operation
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      const createdAssignment = {
+        id: nextAssignmentId++,
+        title: newAssignment.title,
+        description: newAssignment.description,
+        dueDate: newAssignment.dueDate,
+        assignedTo: newAssignment.assignedTo,
+      };
+      mockData.assignments.push(createdAssignment);
       setAssignments([...assignments, createdAssignment]);
       setNewAssignment({ title: '', description: '', dueDate: '', assignedTo: [] });
-      setError('');
     } catch (err) {
       setError('Failed to create assignment. Please check your inputs and try again.');
     }
@@ -72,14 +77,30 @@ const Assignment = ({ role, userId }) => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
+  if (isLoading) return <LoadingSpinner />;
+  if (error)
+    return (
+      <div className="section error">
+        <FaExclamationCircle /> {error}
+      </div>
+    );
+
   return (
     <div className="section">
-      <h2>Assignment</h2>
-      {error && <div className="error-message">{error}</div>}
+      <h2>
+        <FaBookOpen /> Assignments
+      </h2>
+      {error && (
+        <div className="error-message">
+          <FaExclamationCircle /> {error}
+        </div>
+      )}
 
       {role === 'admin' && (
         <form onSubmit={handleCreateAssignment} className="assignment-form">
-          <h3>Create New Assignment</h3>
+          <h3>
+            <FaPlus /> Create New Assignment
+          </h3>
           <div className="form-group">
             <label>Title:</label>
             <input
@@ -89,7 +110,6 @@ const Assignment = ({ role, userId }) => {
               required
             />
           </div>
-
           <div className="form-group">
             <label>Description:</label>
             <textarea
@@ -98,7 +118,6 @@ const Assignment = ({ role, userId }) => {
               required
             />
           </div>
-
           <div className="form-group">
             <label>Due Date:</label>
             <input
@@ -108,27 +127,27 @@ const Assignment = ({ role, userId }) => {
               required
             />
           </div>
-
           <div className="form-group">
             <label>Assign to Students:</label>
             <select
               multiple
               size="4"
               value={newAssignment.assignedTo}
-              onChange={(e) => setNewAssignment({
-                ...newAssignment,
-                assignedTo: Array.from(e.target.selectedOptions, option => parseInt(option.value))
-              })}
+              onChange={(e) =>
+                setNewAssignment({
+                  ...newAssignment,
+                  assignedTo: Array.from(e.target.selectedOptions, (option) => parseInt(option.value)),
+                })
+              }
               required
             >
-              {students.map(student => (
+              {students.map((student) => (
                 <option key={student.id} value={student.id}>
                   {student.username}
                 </option>
               ))}
             </select>
           </div>
-
           <button type="submit" className="submit-button">
             <FaPlus className="icon" /> Create Assignment
           </button>
@@ -142,14 +161,24 @@ const Assignment = ({ role, userId }) => {
           <table>
             <thead>
               <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Due Date</th>
-                {role === 'admin' && <th>Assigned To</th>}
+                <th>
+                  <FaFileAlt /> Title
+                </th>
+                <th>
+                  <FaFileAlt /> Description
+                </th>
+                <th>
+                  <FaCheckCircle /> Due Date
+                </th>
+                {role === 'admin' && (
+                  <th>
+                    <FaUser /> Assigned To
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody>
-              {assignments.map(assignment => (
+              {assignments.map((assignment) => (
                 <tr key={assignment.id}>
                   <td>{assignment.title}</td>
                   <td>{assignment.description}</td>
@@ -157,8 +186,8 @@ const Assignment = ({ role, userId }) => {
                   {role === 'admin' && (
                     <td>
                       {students
-                        .filter(student => assignment.assignedTo.includes(student.id))
-                        .map(student => student.username)
+                        .filter((student) => assignment.assignedTo.includes(student.id))
+                        .map((student) => student.username)
                         .join(', ')}
                     </td>
                   )}

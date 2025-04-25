@@ -1,48 +1,44 @@
-import React, { useState } from "react";
-import { FaSignInAlt } from "react-icons/fa";
-
-const mockApi = {
-  login: (username, password) => {
-    if (username === "lecturer" && password === "admin123") {
-      return Promise.resolve({ token: "mock-jwt-token", role: "admin" });
-    } else if (username === "student1" && password === "student123") {
-      return Promise.resolve({
-        token: "mock-jwt-token",
-        role: "student",
-        userId: 2,
-      });
-    } else if (username === "student2" && password === "student123") {
-      return Promise.resolve({
-        token: "mock-jwt-token",
-        role: "student",
-        userId: 3,
-      });
-    }
-    return Promise.reject(new Error("Invalid credentials"));
-  },
-};
+import React, { useState } from 'react';
+import { FaSignInAlt, FaExclamationCircle } from 'react-icons/fa';
 
 const Login = ({ onLogin }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  // Mock users
+  const mockUsers = [
+    { id: 1, username: 'lecturer', password: 'lecturer123', role: 'admin' },
+    { id: 2, username: 'student1', password: 'student123', role: 'student' },
+    { id: 3, username: 'student2', password: 'student123', role: 'student' },
+  ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await mockApi.login(username, password);
-      onLogin(response.token, response.role, response.userId || null);
+      // Simulate async login
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      const user = mockUsers.find((u) => u.username === username && u.password === password);
+      if (!user) {
+        throw new Error('Invalid username or password');
+      }
+      onLogin('mock-token', user.role, user.id);
     } catch (err) {
-      setError("Invalid username or password");
+      setError(err.message || 'Invalid username or password');
     }
   };
 
   return (
     <div className="login-container">
       <form onSubmit={handleSubmit} className="login-form">
-        <h2>Login</h2>
-        {error && <p className="error">{error}</p>}
-        
+        <h2>
+          <FaSignInAlt /> Login
+        </h2>
+        {error && (
+          <p className="error">
+            <FaExclamationCircle /> {error}
+          </p>
+        )}
         <div>
           <label htmlFor="username">Username</label>
           <input
@@ -51,12 +47,11 @@ const Login = ({ onLogin }) => {
             value={username}
             onChange={(e) => {
               setUsername(e.target.value);
-              setError("");
+              setError('');
             }}
             required
           />
         </div>
-
         <div>
           <label htmlFor="password">Password</label>
           <input
@@ -65,12 +60,11 @@ const Login = ({ onLogin }) => {
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
-              setError("");
+              setError('');
             }}
             required
           />
         </div>
-
         <button type="submit">
           <FaSignInAlt /> Login
         </button>

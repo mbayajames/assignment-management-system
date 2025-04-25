@@ -1,42 +1,54 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { FaBook, FaUsers, FaFileAlt, FaSignOutAlt } from "react-icons/fa";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { FaBookOpen, FaUserGraduate, FaFileAlt, FaSignOutAlt } from 'react-icons/fa';
 
-const Sidebar = ({ role, activeSection, setActiveSection, onLogout }) => (
-  <div className="sidebar">
+const Sidebar = ({ role, activeSection, setActiveSection, onLogout, isOpen, toggleSidebar }) => (
+  <div className={`sidebar ${isOpen ? 'open' : ''}`}>
     <div className="sidebar-header">
-      <h2>Assignment System</h2>
+      <h2><FaBookOpen style={{ marginRight: '10px' }} /> Assignment System</h2>
     </div>
     <nav>
       <ul>
         <li>
           <button
-            className={activeSection === "assignment" ? "active" : ""}
-            onClick={() => setActiveSection("assignment")}
+            className={activeSection === 'assignment' ? 'active' : ''}
+            onClick={() => {
+              setActiveSection('assignment');
+              toggleSidebar();
+            }}
           >
-            <FaBook /> Assignment
+            <FaBookOpen /> Assignments
           </button>
         </li>
-        {role === "admin" && (
+        {role === 'admin' && (
           <li>
             <button
-              className={activeSection === "users" ? "active" : ""}
-              onClick={() => setActiveSection("users")}
+              className={activeSection === 'users' ? 'active' : ''}
+              onClick={() => {
+                setActiveSection('users');
+                toggleSidebar();
+              }}
             >
-              <FaUsers /> Manage Users
+              <FaUserGraduate /> Manage Users
             </button>
           </li>
         )}
         <li>
           <button
-            className={activeSection === "submissions" ? "active" : ""}
-            onClick={() => setActiveSection("submissions")}
+            className={activeSection === 'submissions' ? 'active' : ''}
+            onClick={() => {
+              setActiveSection('submissions');
+              toggleSidebar();
+            }}
           >
             <FaFileAlt /> Submissions
           </button>
         </li>
         <li>
-          <button onClick={onLogout}>
+          <button onClick={() => {
+            onLogout();
+            toggleSidebar();
+          }}>
             <FaSignOutAlt /> Logout
           </button>
         </li>
@@ -46,10 +58,12 @@ const Sidebar = ({ role, activeSection, setActiveSection, onLogout }) => (
 );
 
 Sidebar.propTypes = {
-  role: PropTypes.oneOf(["admin", "student"]),
+  role: PropTypes.oneOf(['admin', 'student']),
   activeSection: PropTypes.string.isRequired,
   setActiveSection: PropTypes.func.isRequired,
   onLogout: PropTypes.func.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  toggleSidebar: PropTypes.func.isRequired,
 };
 
 export default Sidebar;

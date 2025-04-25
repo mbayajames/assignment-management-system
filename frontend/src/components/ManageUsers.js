@@ -1,45 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { FaUserPlus } from 'react-icons/fa';
 
-// Mock API with simulated delays and error handling
-const mockApi = {
-  getUsers: async () => {
-    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
-    return [
-      { id: 2, username: 'student1', role: 'student' },
-      { id: 3, username: 'student2', role: 'student' },
-    ];
-  },
-
-  addUser: async (username, password) => {
-    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
-    
-    // Simulate validation error
-    if (username === 'error') {
-      throw new Error('Simulated API error');
-    }
-
-    return { id: Math.random(), username, role: 'student' };
-  }
-};
-
 const ManageUsers = () => {
   const [users, setUsers] = useState([]);
-  const [newUser, setNewUser] = useState({ 
-    username: '', 
+  const [newUser, setNewUser] = useState({
+    username: '',
     password: '',
-    confirmPassword: '' 
+    confirmPassword: '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  // Mock data
+  const mockUsers = [
+    { id: 2, username: 'student1', role: 'student' },
+    { id: 3, username: 'student2', role: 'student' },
+  ];
+  let nextUserId = 4;
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         setLoading(true);
-        const data = await mockApi.getUsers();
-        setUsers(data);
+        // Simulate async data fetch
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        setUsers(mockUsers);
       } catch (err) {
         setError('Failed to load users. Please try again later.');
       } finally {
@@ -66,7 +52,7 @@ const ManageUsers = () => {
       return false;
     }
 
-    if (users.some(user => user.username === newUser.username)) {
+    if (users.some((user) => user.username === newUser.username)) {
       setError('Username already exists');
       return false;
     }
@@ -83,12 +69,19 @@ const ManageUsers = () => {
 
     try {
       setLoading(true);
-      const addedUser = await mockApi.addUser(newUser.username, newUser.password);
+      // Simulate async operation
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      const addedUser = {
+        id: nextUserId++,
+        username: newUser.username,
+        role: 'student',
+      };
+      mockUsers.push(addedUser);
       setUsers([...users, addedUser]);
       setNewUser({ username: '', password: '', confirmPassword: '' });
       setSuccessMessage('User added successfully!');
     } catch (err) {
-      setError(err.message || 'Failed to add user. Please try again.');
+      setError('Failed to add user. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -98,11 +91,9 @@ const ManageUsers = () => {
     <div className="section">
       <h2>Manage Users</h2>
 
-      {/* Status Messages */}
       {error && <div className="alert error">{error}</div>}
       {successMessage && <div className="alert success">{successMessage}</div>}
 
-      {/* Add User Form */}
       <form onSubmit={handleAddUser} className="form-container">
         <h3>Add New Student</h3>
 
@@ -139,11 +130,7 @@ const ManageUsers = () => {
           />
         </div>
 
-        <button 
-          type="submit" 
-          className="primary-button"
-          disabled={loading}
-        >
+        <button type="submit" className="primary-button" disabled={loading}>
           {loading ? (
             'Adding Student...'
           ) : (
@@ -154,7 +141,6 @@ const ManageUsers = () => {
         </button>
       </form>
 
-      {/* Users Table */}
       {loading ? (
         <div className="loading">Loading users...</div>
       ) : (
@@ -164,7 +150,6 @@ const ManageUsers = () => {
   );
 };
 
-// Extracted Table Component
 const UserTable = ({ users }) => (
   <div className="table-container">
     <table>
@@ -175,7 +160,7 @@ const UserTable = ({ users }) => (
         </tr>
       </thead>
       <tbody>
-        {users.map(user => (
+        {users.map((user) => (
           <tr key={user.id}>
             <td>{user.username}</td>
             <td>{user.role}</td>

@@ -1,10 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { FaUpload, FaCheck, FaTimes, FaEdit, FaTrash } from 'react-icons/fa';
-import axios from 'axios';
+import {
+  FaUpload,
+  FaCheck,
+  FaTimes,
+  FaEdit,
+  FaTrash,
+  FaCheckCircle,
+  FaExclamationCircle,
+  FaFileAlt,
+  FaUser,
+} from 'react-icons/fa';
+import LoadingSpinner from './LoadingSpinner';
 
-const API_URL = 'http://localhost:4000'; // Changed from 5000 to 4000
-
-const Submissions = ({ role, userId }) => {
+const Submissions = ({ role, userID }) => {
   const [submissions, setSubmissions] = useState([]);
   const [newSubmission, setNewSubmission] = useState({ assignmentId: '', content: '' });
   const [assignments, setAssignments] = useState([]);
@@ -13,21 +21,35 @@ const Submissions = ({ role, userId }) => {
   const [editingSubmissionId, setEditingSubmissionId] = useState(null);
   const [editedContent, setEditedContent] = useState('');
 
+  // Mock data
+  const mockData = {
+    assignments: [
+      { id: 1, title: 'Math Assignment', description: 'Solve problems 1-10', dueDate: '2025-05-01', assignedTo: [2, 3] },
+      { id: 2, title: 'Science Project', description: 'Create a model', dueDate: '2025-05-10', assignedTo: [2] },
+    ],
+    submissions: [
+      { id: 1, assignmentId: 1, studentId: 2, content: 'Student 1 submission for Math', submittedAt: '2025-04-25', status: 'pending' },
+      { id: 2, assignmentId: 2, studentId: 2, content: 'Student 1 science model', submittedAt: '2025-04-26', status: 'pending' },
+    ],
+  };
+  let nextSubmissionId = 3;
+
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       setError('');
       try {
-        // Fetch submissions
-        const submissionsResponse = role === 'admin'
-          ? await axios.get(`${API_URL}/submissions`)
-          : await axios.get(`${API_URL}/submissions?studentId=${userId}`);
-        setSubmissions(submissionsResponse.data);
-        
-        // Fetch assignments for students
+        // Simulate async data fetch
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        const submissionsData =
+          role === 'admin'
+            ? mockData.submissions
+            : mockData.submissions.filter((s) => s.studentId === userID);
+        setSubmissions(submissionsData);
+
         if (role === 'student') {
-          const assignmentsResponse = await axios.get(`${API_URL}/assignments?assignedTo_like=${userId}`);
-          setAssignments(assignmentsResponse.data);
+          const assignmentsData = mockData.assignments.filter((a) => a.assignedTo.includes(userID));
+          setAssignments(assignmentsData);
         }
       } catch (err) {
         setError('Failed to load data. Please try again later.');
@@ -37,22 +59,24 @@ const Submissions = ({ role, userId }) => {
     };
 
     fetchData();
-  }, [role, userId]);
+  }, [role, userID]);
 
   const handleSubmitAssignment = async (e) => {
     e.preventDefault();
     setError('');
-    
     try {
-      const response = await axios.post(`${API_URL}/submissions`, {
+      // Simulate async operation
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      const submission = {
+        id: nextSubmissionId++,
         assignmentId: parseInt(newSubmission.assignmentId),
-        studentId: userId,
+        studentId: userID,
         content: newSubmission.content,
         submittedAt: new Date().toISOString().split('T')[0],
-        status: 'pending'
-      });
-      
-      setSubmissions(prev => [...prev, response.data]);
+        status: 'pending',
+      };
+      mockData.submissions.push(submission);
+      setSubmissions((prev) => [...prev, submission]);
       setNewSubmission({ assignmentId: '', content: '' });
     } catch (err) {
       setError('Submission failed. Please try again.');
@@ -61,9 +85,13 @@ const Submissions = ({ role, userId }) => {
 
   const handleMarkSubmission = async (submissionId, status) => {
     try {
-      const response = await axios.patch(`${API_URL}/submissions/${submissionId}`, { status });
-      setSubmissions(prev =>
-        prev.map(sub => (sub.id === submissionId ? response.data : sub))
+      // Simulate async operation
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      const updatedSubmission = mockData.submissions.find((s) => s.id === submissionId);
+      if (!updatedSubmission) throw new Error('Submission not found');
+      updatedSubmission.status = status;
+      setSubmissions((prev) =>
+        prev.map((sub) => (sub.id === submissionId ? { ...sub, status } : sub))
       );
       setError('');
     } catch (err) {
@@ -73,9 +101,13 @@ const Submissions = ({ role, userId }) => {
 
   const handleEditSubmission = async (submissionId) => {
     try {
-      const response = await axios.patch(`${API_URL}/submissions/${submissionId}`, { content: editedContent });
-      setSubmissions(prev =>
-        prev.map(sub => (sub.id === submissionId ? response.data : sub))
+      // Simulate async operation
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      const updatedSubmission = mockData.submissions.find((s) => s.id === submissionId);
+      if (!updatedSubmission) throw new Error('Submission not found');
+      updatedSubmission.content = editedContent;
+      setSubmissions((prev) =>
+        prev.map((sub) => (sub.id === submissionId ? { ...sub, content: editedContent } : sub))
       );
       setEditingSubmissionId(null);
       setEditedContent('');
@@ -88,8 +120,10 @@ const Submissions = ({ role, userId }) => {
   const handleDeleteSubmission = async (submissionId) => {
     if (window.confirm('Are you sure you want to delete this submission?')) {
       try {
-        await axios.delete(`${API_URL}/submissions/${submissionId}`);
-        setSubmissions(prev => prev.filter(sub => sub.id !== submissionId));
+        // Simulate async operation
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        mockData.submissions = mockData.submissions.filter((s) => s.id !== submissionId);
+        setSubmissions((prev) => prev.filter((sub) => sub.id !== submissionId));
         setError('');
       } catch (err) {
         setError('Failed to delete submission. Please try again.');
@@ -107,16 +141,25 @@ const Submissions = ({ role, userId }) => {
     setEditedContent('');
   };
 
-  if (isLoading) return <div className="section">Loading...</div>;
-  if (error) return <div className="section error">{error}</div>;
+  if (isLoading) return <LoadingSpinner />;
+  if (error)
+    return (
+      <div className="section error">
+        <FaExclamationCircle /> {error}
+      </div>
+    );
 
   return (
     <div className="section">
-      <h2>Submissions</h2>
-      
+      <h2>
+        <FaFileAlt /> Submissions
+      </h2>
+
       {role === 'student' && (
         <form onSubmit={handleSubmitAssignment} className="form-container">
-          <h3>Submit Assignment</h3>
+          <h3>
+            <FaUpload /> Submit Assignment
+          </h3>
           <div>
             <label>Assignment</label>
             <select
@@ -125,7 +168,7 @@ const Submissions = ({ role, userId }) => {
               required
             >
               <option value="">Select Assignment</option>
-              {assignments.map(assignment => (
+              {assignments.map((assignment) => (
                 <option key={assignment.id} value={assignment.id}>
                   {assignment.title} (Due: {assignment.dueDate})
                 </option>
@@ -151,17 +194,33 @@ const Submissions = ({ role, userId }) => {
         <table>
           <thead>
             <tr>
-              <th>Assignment ID</th>
-              {role === 'admin' && <th>Student ID</th>}
-              <th>Content</th>
-              <th>Submitted At</th>
-              <th>Status</th>
-              {role === 'admin' && <th>Actions</th>}
+              <th>
+                <FaFileAlt /> Assignment ID
+              </th>
+              {role === 'admin' && (
+                <th>
+                  <FaUser /> Student ID
+                </th>
+              )}
+              <th>
+                <FaFileAlt /> Content
+              </th>
+              <th>
+                <FaCheckCircle /> Submitted At
+              </th>
+              <th>
+                <FaCheckCircle /> Status
+              </th>
+              {role === 'admin' && (
+                <th>
+                  <FaEdit /> Actions
+                </th>
+              )}
             </tr>
           </thead>
           <tbody>
             {submissions.length > 0 ? (
-              submissions.map(submission => (
+              submissions.map((submission) => (
                 <tr key={submission.id}>
                   <td>{submission.assignmentId}</td>
                   {role === 'admin' && <td>{submission.studentId}</td>}
@@ -174,21 +233,21 @@ const Submissions = ({ role, userId }) => {
                           rows="4"
                           style={{ width: '100%' }}
                         />
-                        <div style={{ marginTop: '10px' }}>
+                        <div style={{ marginTop: '10px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                           <button
                             className="primary-button"
-                            style={{ padding: '8px 15px', marginRight: '10px' }}
+                            style={{ padding: '8px 15px' }}
                             onClick={() => handleEditSubmission(submission.id)}
                             disabled={!editedContent.trim()}
                           >
-                            Save
+                            <FaCheckCircle /> Save
                           </button>
                           <button
                             className="primary-button"
                             style={{ padding: '8px 15px' }}
                             onClick={cancelEditing}
                           >
-                            Cancel
+                            <FaTimes /> Cancel
                           </button>
                         </div>
                       </div>
@@ -198,44 +257,54 @@ const Submissions = ({ role, userId }) => {
                   </td>
                   <td>{submission.submittedAt}</td>
                   <td>
-                    {submission.status === 'correct' && <span style={{ color: '#2e7d32' }}>✓ Correct</span>}
-                    {submission.status === 'incorrect' && <span style={{ color: '#d32f2f' }}>✗ Incorrect</span>}
+                    {submission.status === 'correct' && (
+                      <span style={{ color: '#2e7d32' }}>
+                        <FaCheckCircle /> Correct
+                      </span>
+                    )}
+                    {submission.status === 'incorrect' && (
+                      <span style={{ color: '#d32f2f' }}>
+                        <FaTimes /> Incorrect
+                      </span>
+                    )}
                     {submission.status === 'pending' && <span style={{ color: '#666666' }}>Pending</span>}
                   </td>
                   {role === 'admin' && (
                     <td>
-                      <button
-                        className="primary-button"
-                        style={{ marginRight: '10px', padding: '8px 15px' }}
-                        onClick={() => handleMarkSubmission(submission.id, 'correct')}
-                        disabled={submission.status === 'correct' || editingSubmissionId === submission.id}
-                      >
-                        <FaCheck /> Mark Correct
-                      </button>
-                      <button
-                        className="primary-button"
-                        style={{ marginRight: '10px', padding: '8px 15px' }}
-                        onClick={() => handleMarkSubmission(submission.id, 'incorrect')}
-                        disabled={submission.status === 'incorrect' || editingSubmissionId === submission.id}
-                      >
-                        <FaTimes /> Mark Incorrect
-                      </button>
-                      <button
-                        className="primary-button"
-                        style={{ marginRight: '10px', padding: '8px 15px' }}
-                        onClick={() => startEditing(submission)}
-                        disabled={editingSubmissionId === submission.id}
-                      >
-                        <FaEdit /> Edit
-                      </button>
-                      <button
-                        className="primary-button"
-                        style={{ padding: '8px 15px' }}
-                        onClick={() => handleDeleteSubmission(submission.id)}
-                        disabled={editingSubmissionId === submission.id}
-                      >
-                        <FaTrash /> Delete
-                      </button>
+                      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                        <button
+                          className="primary-button"
+                          style={{ padding: '8px 15px' }}
+                          onClick={() => handleMarkSubmission(submission.id, 'correct')}
+                          disabled={submission.status === 'correct' || editingSubmissionId === submission.id}
+                        >
+                          <FaCheck /> Mark Correct
+                        </button>
+                        <button
+                          className="primary-button"
+                          style={{ padding: '8px 15px' }}
+                          onClick={() => handleMarkSubmission(submission.id, 'incorrect')}
+                          disabled={submission.status === 'incorrect' || editingSubmissionId === submission.id}
+                        >
+                          <FaTimes /> Mark Incorrect
+                        </button>
+                        <button
+                          className="primary-button"
+                          style={{ padding: '8px 15px' }}
+                          onClick={() => startEditing(submission)}
+                          disabled={editingSubmissionId === submission.id}
+                        >
+                          <FaEdit /> Edit
+                        </button>
+                         <button
+                          className="primary-button"
+                          style={{ padding: '8px 15px' }}
+                          onClick={() => handleDeleteSubmission(submission.id)}
+                          disabled={editingSubmissionId === submission.id}
+                        >
+                          <FaTrash /> Delete
+                        </button>
+                      </div>
                     </td>
                   )}
                 </tr>

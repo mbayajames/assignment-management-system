@@ -1,0 +1,23 @@
+{
+    "development": {
+        "username": "root",
+        "password": "your_password",
+        "database": "assignment_system",
+        "host": "localhost",
+        "dialect": "mysql"
+    },
+    "test": {
+        "username": "root",
+        "password": "your_password",
+        "database": "assignment_system_test",
+        "host": "localhost",
+        "dialect": "mysql"
+      },
+      "production": {
+        "username": "root",
+        "password": "your_password",
+        "database": "assignment_system_prod",
+        "host": "localhost",
+        "dialect": "mysql"
+      }
+}

@@ -1,6 +1,10 @@
-const { errorResponse } = require('../utils/response');
+const { errorResponse } = require("../utils/response");
+const logger = require("../utils/logger");
 
 module.exports = (err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json(errorResponse('Internal server error', err.message));
+  logger.error(`Internal server error: ${err.message}`, {
+    stack: err.stack,
+    url: req.url,
+  });
+  res.status(500).json(errorResponse("Internal server error", err.message));
 };

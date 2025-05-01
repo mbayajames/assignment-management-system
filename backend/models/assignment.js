@@ -1,30 +1,34 @@
 module.exports = (sequelize, DataTypes) => {
-    const Assignment = sequelize.define('Assignment', {
+  const Assignment = sequelize.define(
+    "Assignment",
+    {
       id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
-        primaryKey: true
+        primaryKey: true,
       },
       title: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
       },
       description: {
         type: DataTypes.TEXT,
-        allowNull: true
+        allowNull: true,
       },
       dueDate: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
       },
       createdBy: {
         type: DataTypes.INTEGER,
-        allowNull: false
-      }
-    }, {
-      tableName: 'assignments',
-      timestamps: true
-    });
-  
-    return Assignment;
-  };
+        allowNull: false,
+      },
+    },
+    {
+      tableName: "assignments",
+      timestamps: true,
+    }
+  );
+
+  return Assignment;
+};

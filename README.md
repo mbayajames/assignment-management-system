@@ -1,7 +1,5 @@
-BACKEND ASSIGNMENT-MANAGEMENT-SYSTEM
-
-Assignment System API (MongoDB)
-A RESTful API for an assignment management system, built with Node.js, Express, MongoDB, and Mongoose.
+Assignment Management System Backend (MongoDB)
+Backend for the Assignment Management System, built with Node.js, Express, and MongoDB, located in the backends directory of the assignment-management-system project.
 Prerequisites
 
 Node.js (>= 14.x)
@@ -10,9 +8,8 @@ Postman (for testing)
 
 Setup
 
-Clone the repository:
-git clone <repository-url>
-cd assignment-system-api
+Navigate to backends directory:
+cd assignment-management-system/backends
 
 
 Install dependencies:
@@ -21,8 +18,8 @@ npm install
 
 Configure environment variables:
 
-Create .env file with:PORT=3000
-MONGO_URI=mongodb://localhost:27017/assignment_system
+Create backends/.env:PORT=3000
+MONGO_URI=mongodb://localhost:27017/assignment_management_system
 JWT_SECRET=your_jwt_secret
 
 
@@ -31,28 +28,25 @@ Replace your_jwt_secret with a secure value.
 
 Set up MongoDB:
 
-Ensure MongoDB is running locally (mongod) or use a cloud service like MongoDB Atlas.
-The database assignment_system will be created automatically by Mongoose.
+Start MongoDB:mongod
+
+
+The database assignment_management_system and collections (users, assignments, submissions) will be created automatically.
 
 
 Initialize database with mock data:
 
-Use MongoDB Compass, mongo shell, or a script to insert initial users:const bcrypt = require('bcryptjs');
-const users = [
-  { username: 'lecturer', password: bcrypt.hashSync('lecturer123', 10), role: 'admin' },
-  { username: 'student1', password: bcrypt.hashSync('student123', 10), role: 'student' },
-  { username: 'student2', password: bcrypt.hashSync('student123', 10), role: 'student' }
-];
-// Insert into MongoDB (e.g., via mongoose or mongo shell)
-db.users.insertMany(users);
+Generate bcrypt hashes:const bcrypt = require('bcryptjs');
+console.log(bcrypt.hashSync('lecturer123', 10));
+console.log(bcrypt.hashSync('student123', 10));
 
 
-Example mongo shell command:use assignment_system
+Insert users using MongoDB shell or MongoDB Compass:use assignment_management_system;
 db.users.insertMany([
-  { username: "lecturer", password: "<bcrypt_hash_for_lecturer123>", role: "admin", createdAt: new Date(), updatedAt: new Date() },
-  { username: "student1", password: "<bcrypt_hash_for_student123>", role: "student", createdAt: new Date(), updatedAt: new Date() },
-  { username: "student2", password: "<bcrypt_hash_for_student123>", role: "student", createdAt: new Date(), updatedAt: new Date() }
-])
+  { username: "lecturer", password: "<hash_for_lecturer123>", role: "admin", createdAt: new Date(), updatedAt: new Date() },
+  { username: "student1", password: "<hash_for_student123>", role: "student", createdAt: new Date(), updatedAt: new Date() },
+  { username: "student2", password: "<hash_for_student123>", role: "student", createdAt: new Date(), updatedAt: new Date() }
+]);
 
 
 
@@ -61,17 +55,22 @@ Start the server:
 npm start
 
 
-For development with auto-restart:npm run dev
+For development:npm run dev
 
 
 
 
 Test APIs with Postman:
 
-Import postman/Assignment_System_API.postman_collection.json into Postman.
-Run the Login request (POST /api/auth/login) to get a JWT token.
-Save the token in the token variable and test other endpoints.
-Note: Update assignmentId and other IDs in Postman to valid MongoDB ObjectIds after creating data.
+Import backends/postman/Assignment_Management_System_API.postman_collection.json.
+Run Login (POST /api/auth/login):{
+  "username": "lecturer",
+  "password": "lecturer123"
+}
+
+
+Save token, student1Id, student2Id in Postman variables.
+Test endpoints, using ObjectIds for assignmentId and submissionId.
 
 
 
@@ -95,7 +94,7 @@ GET /api/submissions/:id - Get submission by ID
 POST /api/submissions - Create submission (student only)
 PUT /api/submissions/:id - Update submission (student only)
 DELETE /api/submissions/:id - Delete submission (student only)
-PUT /api/submissions/:id/mark - Mark submission as correct/incorrect (admin only)
+PUT /api/submissions/:id/mark - Mark submission (admin only)
 
 
 Users (require Authorization: Bearer <token>):
@@ -105,24 +104,74 @@ GET /api/users - Get all users (admin only)
 
 
 Project Structure
-assignment-system-api/
-├── config/              # Database and environment configuration
-├── controllers/         # Request handling logic
-├── middleware/          # Custom middleware (auth, error handling)
-├── models/              # Mongoose schemas
-├── routes/              # API routes
-├── utils/               # Helper functions (logger, responses)
-├── postman/             # Postman collection for testing
-├── .env                 # Environment variables
-├── .gitignore           # Git ignore file
-├── app.js               # Main server file
-├── package.json         # Dependencies and scripts
-└── README.md            # Project documentation
+assignment-management-system/
+├── backends/
+│   ├── config/              # Database configuration
+│   │   ├── database.js      # MongoDB connection setup
+│   │   └── config.json      # Environment-specific configs
+│   ├── controllers/         # Request handling logic
+│   │   ├── authController.js       # Login and authentication
+│   │   ├── assignmentController.js # Assignment CRUD
+│   │   ├── submissionController.js # Submission CRUD and marking
+│   │   └── userController.js       # User management
+│   ├── middleware/          # Custom middleware
+│   │   ├── auth.js          # JWT authentication
+│   │   └── errorHandler.js  # Error handling
+│   ├── models/              # Mongoose schemas
+│   │   ├── index.js         # Model initialization
+│   │   ├── user.js          # User schema
+│   │   ├── assignment.js    # Assignment schema
+│   │   └── submission.js    # Submission schema
+│   ├── routes/              # API routes
+│   │   ├── authRoutes.js        # Auth endpoints
+│   │   ├── assignmentRoutes.js  # Assignment endpoints
+│   │   ├── submissionRoutes.js  # Submission endpoints
+│   │   └── userRoutes.js        # User endpoints
+│   ├── utils/               # Helper functions
+│   │   ├── logger.js        # Winston logging
+│   │   └── response.js      # Response formatting
+│   ├── postman/             # Postman collection
+│   │   └── Assignment_Management_System_API.postman_collection.json
+│   ├── .env                 # Environment variables
+│   ├── .gitignore           # Ignored files
+│   ├── app.js               # Express server setup
+│   ├── package.json         # Backend dependencies and scripts
+│   └── README.md            # Backend documentation
+├── Frontend/
+│   ├── src/                 # Source code
+│   │   ├── components/      # React components
+│   │   │   ├── Assignment.js    # Assignment management UI
+│   │   │   ├── Login.js         # Login form
+│   │   │   └── [Other components] # Additional UI components
+│   │   ├── services/        # API client
+│   │   │   └── api.js       # Axios-based API service
+│   │   ├── App.js           # Main app component
+│   │   └── index.js         # Entry point
+│   ├── public/              # Static assets
+│   │   ├── index.html       # HTML template
+│   │   └── [Other assets]   # Favicons, images, etc.
+│   ├── package.json         # Frontend dependencies and scripts
+│   └── README.md            # Frontend documentation
 
-Integration with Frontend
+Frontend Integration
+The frontend, located in the Frontend directory, is a React-based application that interacts with the backend APIs at http://localhost:3000/api. Below are steps to set up and integrate the frontend:
 
-Update the frontend to use http://localhost:3000/api as the base URL.
-Add an API service (e.g., using axios):import axios from 'axios';
+Navigate to Frontend directory:
+cd assignment-management-system/Frontend
+
+
+Install dependencies:
+npm install
+
+
+Ensure axios is included for API requests:npm install axios
+
+
+
+
+Set up API service (Frontend/src/services/api.js):
+
+This file configures Axios to communicate with the backend, including JWT authentication:import axios from 'axios';
 
 const api = axios.create({
   baseURL: 'http://localhost:3000/api',
@@ -140,23 +189,82 @@ api.interceptors.request.use(config => {
 export default api;
 
 
-Install axios: npm install axios in the frontend directory.
-Update components (Assignment.js, Submissions.js, ManageUsers.js) to use API calls.
-Note: MongoDB uses _id (ObjectId) instead of id. Update frontend to handle _id fields (e.g., assignment._id instead of assignment.id).
 
-Notes
 
-Passwords are hashed with bcrypt.
-Use environment variables for sensitive data.
-Test all endpoints with Postman before frontend integration.
-The mock data matches the frontend: lecturer (admin), student1, student2 (students).
-Winston logging is used for debugging, error tracking, and auditing (see utils/logger.js).
+Update React components:
 
-Troubleshooting
+Example for Frontend/src/components/Assignment.js to fetch assignments:import { useState, useEffect } from 'react';
+import api from '../services/api';
 
-MongoDB connection issues: Ensure MongoDB is running (mongod) and MONGO_URI is correct.
-Port conflicts: Change PORT in .env if 3000 is in use.
-Mongoose errors: Verify MongoDB version compatibility (npm list mongoose).
-JWT errors: Ensure JWT_SECRET is set and token is sent as Bearer <token>.
-ObjectId issues: Use valid MongoDB ObjectIds in Postman requests.
+const Assignment = ({ role, userId }) => {
+  const [assignments, setAssignments] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const loadData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await api.get('/assignments');
+        const assignmentsData = role === 'admin' ? response.data.data : response.data.data.filter(a => a.assignedTo.some(u => u.id === userId));
+        setAssignments(assignmentsData);
+        if (role === 'admin') {
+          const usersResponse = await api.get('/users');
+          setStudents(usersResponse.data.data.filter(u => u.role === 'student'));
+        }
+      } catch (err) {
+        setError('Failed to load data. Please try refreshing the page.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadData();
+  }, [role, userId]);
+
+  return (
+    <div>
+      {isLoading && <p>Loading...</p>}
+      {error && <p>{error}</p>}
+      <ul>
+        {assignments.map(assignment => (
+          <li key={assignment.id}>{assignment.title}</li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default Assignment;
+
+
+
+
+Run the frontend:
+
+Update Frontend/package.json to use port 3001:"scripts": {
+  "start": "PORT=3001 react-scripts start",
+  "build": "react-scripts build",
+  "test": "react-scripts test",
+  "eject": "react-scripts eject"
+}
+
+
+Start the frontend:npm start
+
+
+The frontend will run on http://localhost:3001.
+
+
+Key frontend files:
+
+Frontend/src/App.js: Main app component, defines routes and layout.
+Frontend/src/index.js: Entry point, renders the app.
+Frontend/src/components/Login.js: Handles user login, sends POST /api/auth/login requests.
+Frontend/src/components/Assignment.js: Displays and manages assignments.
+Frontend/public/index.html: HTML template for the React app.
+
+
+**Test frontend
+
 

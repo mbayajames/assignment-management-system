@@ -1,0 +1,10 @@
+{
+    "development": {
+        "host": "localhost",
+        "port": 3000,
+        "database": "assignment_system"
+    },
+    "jwt": {
+        "expiresIn": "1h"
+    }
+}

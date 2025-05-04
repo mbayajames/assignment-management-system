@@ -1,3 +1,107 @@
+Assignment Management System Frontend
+Overview
+This is the frontend for the Assignment Management System, built with React. It provides a user interface for managing assignments, submissions, and users. The frontend is served by the backend on http://localhost:3000.
+Project Structure
+frontend/
+├── src/
+│   ├── components/
+│   │   ├── Header.js
+│   │   ├── LoadingSpinner.js
+│   │   ├── Login.js
+│   │   ├── Sidebar.js
+│   │   ├── Assignment.js
+│   │   ├── ManageUsers.js
+│   │   └── Submissions.js
+│   ├── Dashboard.js
+│   ├── App.js
+│   ├── index.js
+│   ├── styles.css
+│   └── index.css
+├── public/
+│   ├── index.html
+│   └── favicon.ico
+├── package.json
+└── README.md
+
+Prerequisites
+
+Node.js (v14 or later)
+The backend must be set up and running (see ../backends/README.md).
+
+Setup Instructions
+
+Navigate to the Frontend Directory:
+cd assignment-management-system/frontend
+
+
+Install Dependencies:
+npm install
+
+
+Build the Frontend:
+npm run build
+
+This will generate the build directory with static files, which the backend will serve.
+
+Run the Application:
+
+The frontend does not need to be run separately since it is served by the backend.
+Navigate to the backend directory (../backends) and start the backend:cd ../backends
+npm start
+
+
+Access the application at http://localhost:3000.
+
+
+
+Development
+To develop the frontend independently (e.g., for live reloading):
+
+Start the Frontend Development Server:
+cd frontend
+npm start
+
+This will run the frontend on http://localhost:3001. However, you may encounter CORS issues since the backend is on http://localhost:3000.
+
+Proxy Setup (Optional):To avoid CORS issues during development, add a proxy to package.json:
+"proxy": "http://localhost:3000"
+
+Then restart the development server.
+
+Build and Test:After making changes, rebuild the frontend (npm run build) and restart the backend to see the updates.
+
+
+Features
+
+Login: Users can log in as either an admin (lecturer, password: admin123) or a student (student1 or student2, password: student123).
+Assignments:
+Students can view assignments assigned to them.
+Admins can view all assignments and create new ones, assigning them to students.
+
+
+Submissions:
+Students can submit assignments by providing a file URL.
+Admins can view all submissions (edit/mark/delete functionality is not yet supported by the backend).
+
+
+Manage Users:
+Admins can view all students and add new students.
+
+
+Responsive Design: The UI is responsive and works on both desktop and mobile devices.
+
+Notes
+
+The frontend is served by the backend on http://localhost:3000.
+The Submissions component has features (marking, editing, deleting) that are not yet supported by the backend. Additional backend endpoints are needed to enable these features.
+Styles are defined in styles.css and are responsive for various screen sizes.
+
+
+
+
+
+
+
 Assignment Management System Backend
 Overview
 This is the backend for an Assignment Management System built with Node.js, Express, and MongoDB. It provides APIs for user authentication, assignment management, user management, and submission handling.

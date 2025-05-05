@@ -53,4 +53,72 @@ const createSubmission = async (req, res) => {
   }
 };
 
-module.exports = { getSubmissions, createSubmission };
+const updateSubmission = async (req, res) => {
+  if (req.user.role !== "admin")
+    return errorResponse(res, "Access denied", 403);
+
+  const { submissionId } = req.params;
+  const { fileUrl } = req.body;
+
+  try {
+    const submission = await Submission.findById(submissionId);
+    if (!submission) return errorResponse(res, "Submission not found");
+
+    submission.fileUrl = fileUrl || submission.fileUrl;
+    await submission.save();
+
+    logger.info(`Submission ${submissionId} updated successfully`);
+    successResponse(res, submission);
+  } catch (err) {
+    logger.error("Unexpected error updating submission", { err });
+    errorResponse(res, "Server error", 500);
+  }
+};
+
+const markSubmission = async (req, res) => {
+  if (req.user.role !== "admin")
+    return errorResponse(res, "Access denied", 403);
+
+  const { submissionId } = req.params;
+  const { status } = req.body;
+
+  try {
+    const submission = await Submission.findById(submissionId);
+    if (!submission) return errorResponse(res, "Submission not found");
+
+    submission.status = status;
+    await submission.save();
+
+    logger.info(`Submission ${submissionId} marked as ${status}`);
+    successResponse(res, submission);
+  } catch (err) {
+    logger.error("Unexpected error marking submission", { err });
+    errorResponse(res, "Server error", 500);
+  }
+};
+
+const deleteSubmission = async (req, res) => {
+  if (req.user.role !== "admin")
+    return errorResponse(res, "Access denied", 403);
+
+  const { submissionId } = req.params;
+
+  try {
+    const submission = await Submission.findByIdAndDelete(submissionId);
+    if (!submission) return errorResponse(res, "Submission not found");
+
+    logger.info(`Submission ${submissionId} deleted successfully`);
+    successResponse(res, { message: "Submission deleted successfully" });
+  } catch (err) {
+    logger.error("Unexpected error deleting submission", { err });
+    errorResponse(res, "Server error", 500);
+  }
+};
+
+module.exports = {
+  getSubmissions,
+  createSubmission,
+  updateSubmission,
+  markSubmission,
+  deleteSubmission,
+};

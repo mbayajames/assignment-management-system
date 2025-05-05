@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { FaUserPlus } from 'react-icons/fa';
+import React, { useState, useEffect } from "react";
+import { FaUserPlus } from "react-icons/fa";
 
 const ManageUsers = () => {
   const [users, setUsers] = useState([]);
   const [newUser, setNewUser] = useState({
-    username: '',
-    password: '',
-    confirmPassword: '',
+    username: "",
+    password: "",
+    confirmPassword: "",
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   // Mock data
   const mockUsers = [
-    { id: 2, username: 'student1', role: 'student' },
-    { id: 3, username: 'student2', role: 'student' },
+    { id: 2, username: "student1", role: "student" },
+    { id: 3, username: "student2", role: "student" },
   ];
   let nextUserId = 4;
 
@@ -27,7 +27,7 @@ const ManageUsers = () => {
         await new Promise((resolve) => setTimeout(resolve, 500));
         setUsers(mockUsers);
       } catch (err) {
-        setError('Failed to load users. Please try again later.');
+        setError("Failed to load users. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -38,22 +38,22 @@ const ManageUsers = () => {
 
   const validateForm = () => {
     if (!newUser.username || !newUser.password) {
-      setError('All fields are required');
+      setError("All fields are required");
       return false;
     }
 
     if (newUser.password !== newUser.confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return false;
     }
 
     if (newUser.password.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError("Password must be at least 6 characters");
       return false;
     }
 
     if (users.some((user) => user.username === newUser.username)) {
-      setError('Username already exists');
+      setError("Username already exists");
       return false;
     }
 
@@ -62,8 +62,8 @@ const ManageUsers = () => {
 
   const handleAddUser = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccessMessage('');
+    setError("");
+    setSuccessMessage("");
 
     if (!validateForm()) return;
 
@@ -74,14 +74,14 @@ const ManageUsers = () => {
       const addedUser = {
         id: nextUserId++,
         username: newUser.username,
-        role: 'student',
+        role: "student",
       };
       mockUsers.push(addedUser);
       setUsers([...users, addedUser]);
-      setNewUser({ username: '', password: '', confirmPassword: '' });
-      setSuccessMessage('User added successfully!');
+      setNewUser({ username: "", password: "", confirmPassword: "" });
+      setSuccessMessage("User added successfully!");
     } catch (err) {
-      setError('Failed to add user. Please try again.');
+      setError("Failed to add user. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -103,7 +103,9 @@ const ManageUsers = () => {
             id="username"
             type="text"
             value={newUser.username}
-            onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
+            onChange={(e) =>
+              setNewUser({ ...newUser, username: e.target.value })
+            }
             disabled={loading}
           />
         </div>
@@ -114,7 +116,9 @@ const ManageUsers = () => {
             id="password"
             type="password"
             value={newUser.password}
-            onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+            onChange={(e) =>
+              setNewUser({ ...newUser, password: e.target.value })
+            }
             disabled={loading}
           />
         </div>
@@ -125,14 +129,16 @@ const ManageUsers = () => {
             id="confirmPassword"
             type="password"
             value={newUser.confirmPassword}
-            onChange={(e) => setNewUser({ ...newUser, confirmPassword: e.target.value })}
+            onChange={(e) =>
+              setNewUser({ ...newUser, confirmPassword: e.target.value })
+            }
             disabled={loading}
           />
         </div>
 
         <button type="submit" className="primary-button" disabled={loading}>
           {loading ? (
-            'Adding Student...'
+            "Adding Student..."
           ) : (
             <>
               <FaUserPlus /> Add Student

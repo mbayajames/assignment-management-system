@@ -1,28 +1,47 @@
-import React, { useState, useEffect } from 'react';
-import { FaPlus, FaBookOpen, FaFileAlt, FaExclamationCircle, FaCheckCircle, FaUser } from 'react-icons/fa';
-import LoadingSpinner from './LoadingSpinner';
+import React, { useState, useEffect } from "react";
+import {
+  FaPlus,
+  FaBookOpen,
+  FaFileAlt,
+  FaExclamationCircle,
+  FaCheckCircle,
+  FaUser,
+} from "react-icons/fa";
+import LoadingSpinner from "./LoadingSpinner";
 
 const Assignment = ({ role, userId }) => {
   const [assignments, setAssignments] = useState([]);
   const [newAssignment, setNewAssignment] = useState({
-    title: '',
-    description: '',
-    dueDate: '',
+    title: "",
+    description: "",
+    dueDate: "",
     assignedTo: [],
   });
   const [students, setStudents] = useState([]);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   // Mock data
   const mockData = {
     assignments: [
-      { id: 1, title: 'Math Assignment', description: 'Solve problems 1-10', dueDate: '2025-05-01', assignedTo: [2, 3] },
-      { id: 2, title: 'Science Project', description: 'Create a model', dueDate: '2025-05-10', assignedTo: [2] },
+      {
+        id: 1,
+        title: "Math Assignment",
+        description: "Solve problems 1-10",
+        dueDate: "2025-05-01",
+        assignedTo: [2, 3],
+      },
+      {
+        id: 2,
+        title: "Science Project",
+        description: "Create a model",
+        dueDate: "2025-05-10",
+        assignedTo: [2],
+      },
     ],
     users: [
-      { id: 2, username: 'student1', role: 'student' },
-      { id: 3, username: 'student2', role: 'student' },
+      { id: 2, username: "student1", role: "student" },
+      { id: 3, username: "student2", role: "student" },
     ],
   };
   let nextAssignmentId = 3;
@@ -34,16 +53,16 @@ const Assignment = ({ role, userId }) => {
         // Simulate async data fetch
         await new Promise((resolve) => setTimeout(resolve, 500));
         const assignmentsData =
-          role === 'admin'
+          role === "admin"
             ? mockData.assignments
             : mockData.assignments.filter((a) => a.assignedTo.includes(userId));
         setAssignments(assignmentsData);
 
-        if (role === 'admin') {
+        if (role === "admin") {
           setStudents(mockData.users);
         }
       } catch (err) {
-        setError('Failed to load data. Please try refreshing the page.');
+        setError("Failed to load data. Please try refreshing the page.");
       } finally {
         setIsLoading(false);
       }
@@ -53,7 +72,7 @@ const Assignment = ({ role, userId }) => {
 
   const handleCreateAssignment = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     try {
       // Simulate async operation
       await new Promise((resolve) => setTimeout(resolve, 500));
@@ -66,14 +85,21 @@ const Assignment = ({ role, userId }) => {
       };
       mockData.assignments.push(createdAssignment);
       setAssignments([...assignments, createdAssignment]);
-      setNewAssignment({ title: '', description: '', dueDate: '', assignedTo: [] });
+      setNewAssignment({
+        title: "",
+        description: "",
+        dueDate: "",
+        assignedTo: [],
+      });
     } catch (err) {
-      setError('Failed to create assignment. Please check your inputs and try again.');
+      setError(
+        "Failed to create assignment. Please check your inputs and try again."
+      );
     }
   };
 
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
@@ -96,7 +122,7 @@ const Assignment = ({ role, userId }) => {
         </div>
       )}
 
-      {role === 'admin' && (
+      {role === "admin" && (
         <form onSubmit={handleCreateAssignment} className="assignment-form">
           <h3>
             <FaPlus /> Create New Assignment
@@ -106,7 +132,9 @@ const Assignment = ({ role, userId }) => {
             <input
               type="text"
               value={newAssignment.title}
-              onChange={(e) => setNewAssignment({ ...newAssignment, title: e.target.value })}
+              onChange={(e) =>
+                setNewAssignment({ ...newAssignment, title: e.target.value })
+              }
               required
             />
           </div>
@@ -114,7 +142,12 @@ const Assignment = ({ role, userId }) => {
             <label>Description:</label>
             <textarea
               value={newAssignment.description}
-              onChange={(e) => setNewAssignment({ ...newAssignment, description: e.target.value })}
+              onChange={(e) =>
+                setNewAssignment({
+                  ...newAssignment,
+                  description: e.target.value,
+                })
+              }
               required
             />
           </div>
@@ -123,7 +156,9 @@ const Assignment = ({ role, userId }) => {
             <input
               type="date"
               value={newAssignment.dueDate}
-              onChange={(e) => setNewAssignment({ ...newAssignment, dueDate: e.target.value })}
+              onChange={(e) =>
+                setNewAssignment({ ...newAssignment, dueDate: e.target.value })
+              }
               required
             />
           </div>
@@ -136,7 +171,9 @@ const Assignment = ({ role, userId }) => {
               onChange={(e) =>
                 setNewAssignment({
                   ...newAssignment,
-                  assignedTo: Array.from(e.target.selectedOptions, (option) => parseInt(option.value)),
+                  assignedTo: Array.from(e.target.selectedOptions, (option) =>
+                    parseInt(option.value)
+                  ),
                 })
               }
               required
@@ -170,7 +207,7 @@ const Assignment = ({ role, userId }) => {
                 <th>
                   <FaCheckCircle /> Due Date
                 </th>
-                {role === 'admin' && (
+                {role === "admin" && (
                   <th>
                     <FaUser /> Assigned To
                   </th>
@@ -183,12 +220,14 @@ const Assignment = ({ role, userId }) => {
                   <td>{assignment.title}</td>
                   <td>{assignment.description}</td>
                   <td>{formatDate(assignment.dueDate)}</td>
-                  {role === 'admin' && (
+                  {role === "admin" && (
                     <td>
                       {students
-                        .filter((student) => assignment.assignedTo.includes(student.id))
+                        .filter((student) =>
+                          assignment.assignedTo.includes(student.id)
+                        )
                         .map((student) => student.username)
-                        .join(', ')}
+                        .join(", ")}
                     </td>
                   )}
                 </tr>

@@ -1,5 +1,5 @@
 const express = require("express");
-const cors = require("cors");
+const path = require("path");
 const dotenv = require("dotenv");
 const errorHandler = require("./middleware/errorHandler");
 const logger = require("./utils/logger");
@@ -14,19 +14,27 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors({ origin: "http://localhost:3001" }));
 app.use(express.json());
 
-// Routes
+// Serve static files from the frontend build directory
+app.use(express.static(path.join(__dirname, "../frontend/build")));
+
+// API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/assignments", assignmentRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/submissions", submissionRoutes);
 
+// Serve the frontend for all other routes (React Router handling)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
+});
+
 // Error handling middleware
 app.use(errorHandler);
 
 // Seed initial data
+const bcrypt = require("bcryptjs");
 const seedData = async () => {
   try {
     const lecturer = await User.findOne({ username: "lecturer" });

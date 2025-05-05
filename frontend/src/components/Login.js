@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import { FaSignInAlt, FaExclamationCircle } from 'react-icons/fa';
+import React, { useState } from "react";
+import { FaSignInAlt, FaExclamationCircle } from "react-icons/fa";
 
 const Login = ({ onLogin }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   // Mock users
   const mockUsers = [
-    { id: 1, username: 'lecturer', password: 'lecturer123', role: 'admin' },
-    { id: 2, username: 'student1', password: 'student123', role: 'student' },
-    { id: 3, username: 'student2', password: 'student123', role: 'student' },
+    { id: 1, username: "lecturer", password: "lecturer123", role: "admin" },
+    { id: 2, username: "student1", password: "student123", role: "student" },
+    { id: 3, username: "student2", password: "student123", role: "student" },
   ];
 
   const handleSubmit = async (e) => {
@@ -18,13 +18,15 @@ const Login = ({ onLogin }) => {
     try {
       // Simulate async login
       await new Promise((resolve) => setTimeout(resolve, 500));
-      const user = mockUsers.find((u) => u.username === username && u.password === password);
+      const user = mockUsers.find(
+        (u) => u.username === username && u.password === password
+      );
       if (!user) {
-        throw new Error('Invalid username or password');
+        throw new Error("Invalid username or password");
       }
-      onLogin('mock-token', user.role, user.id);
+      onLogin("mock-token", user.role, user.id);
     } catch (err) {
-      setError(err.message || 'Invalid username or password');
+      setError(err.message || "Invalid username or password");
     }
   };
 
@@ -47,7 +49,7 @@ const Login = ({ onLogin }) => {
             value={username}
             onChange={(e) => {
               setUsername(e.target.value);
-              setError('');
+              setError("");
             }}
             required
           />
@@ -60,7 +62,7 @@ const Login = ({ onLogin }) => {
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
-              setError('');
+              setError("");
             }}
             required
           />

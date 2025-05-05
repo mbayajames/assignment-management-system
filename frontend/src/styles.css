@@ -6,56 +6,92 @@
 }
 
 body {
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+  font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     sans-serif;
-  background-color: #f5f7fa;
-  color: #000000;
-  font-size: 16px; /* Base font size for scalability */
-  line-height: 1.5;
+  background: #f9f9fb; /* Soft off-white background */
+  color: #333; /* Softer text color */
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  position: relative;
 }
 
-/* Animation keyframes */
-@keyframes bounce {
-  0%,
+/* Background wave pattern */
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%232C6E4920" fill-opacity="0.3" d="M0,224L48,213.3C96,203,192,181,288,165.3C384,149,480,139,576,149.3C672,160,768,192,864,197.3C960,203,1056,181,1152,176C1248,171,1344,181,1392,186.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>')
+    repeat-x bottom;
+  animation: wave 20s linear infinite;
+  z-index: -1;
+  opacity: 0.2;
+}
+
+/* Unique animations */
+@keyframes wave {
+  0% {
+    background-position: 0 bottom;
+  }
   100% {
+    background-position: 1440px bottom;
+  }
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 5px rgba(44, 110, 73, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(44, 110, 73, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(44, 110, 73, 0.3);
+  }
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blink {
+  50% {
+    border-color: transparent;
+  }
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes lift {
+  0% {
     transform: translateY(0);
   }
-  50% {
+  100% {
     transform: translateY(-5px);
-  }
-}
-
-@keyframes wiggle {
-  0% {
-    transform: rotate(0deg);
-  }
-  25% {
-    transform: rotate(2deg);
-  }
-  75% {
-    transform: rotate(-2deg);
-  }
-  100% {
-    transform: rotate(0deg);
-  }
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
   }
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(15px);
   }
   to {
     opacity: 1;
@@ -72,12 +108,15 @@ body {
   }
 }
 
-@keyframes slideIn {
-  from {
-    transform: translateX(-100%);
+@keyframes float {
+  0% {
+    transform: translateY(0);
   }
-  to {
-    transform: translateX(0);
+  50% {
+    transform: translateY(-8px);
+  }
+  100% {
+    transform: translateY(0);
   }
 }
 
@@ -86,48 +125,57 @@ body {
   display: flex;
   min-height: 100vh;
   flex-direction: row;
+  background: #f9f9fb;
 }
 
 /* Header for mobile */
 .header {
   display: none;
-  background: linear-gradient(90deg, #003087 0%, #0040b0 100%);
+  background: #2c6e49; /* Muted teal */
   padding: 1rem;
   position: fixed;
   width: 100%;
   top: 0;
   z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .header h2 {
-  color: white;
+  color: #fff;
   margin: 0;
   font-size: 1.25rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  font-weight: 500;
 }
 
 .hamburger {
   background: none;
   border: none;
-  color: white;
+  color: #fff;
   font-size: 1.5rem;
   cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.hamburger:hover {
+  transform: rotate(90deg);
 }
 
 /* Sidebar styles */
 .sidebar {
   width: 260px;
-  background: linear-gradient(180deg, #003087 0%, #002060 100%);
-  color: white;
+  background: #2c6e49; /* Muted teal */
+  color: #fff;
   padding: 1.5rem;
   position: fixed;
   height: 100vh;
-  box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
   z-index: 999;
+  border-right: 1px solid #e0e0e0;
 }
 
 .sidebar-header {
@@ -137,10 +185,14 @@ body {
 
 .sidebar-header h2 {
   font-size: 1.5rem;
-  color: white;
+  color: #fff;
   margin: 0;
-  font-weight: 600;
-  letter-spacing: 0.5px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid #fff;
+  animation: typing 2s steps(20, end) forwards, blink 0.75s step-end infinite;
 }
 
 .sidebar nav ul {
@@ -149,13 +201,13 @@ body {
 }
 
 .sidebar nav li {
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .sidebar nav button {
   background: none;
   border: none;
-  color: white;
+  color: #fff;
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -165,19 +217,18 @@ body {
   padding: 0.75rem 1rem;
   width: 100%;
   text-align: left;
-  border-radius: 6px;
-  transition: background-color 0.3s ease, transform 0.1s ease;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
 }
 
 .sidebar nav button:hover {
   background-color: rgba(255, 255, 255, 0.1);
-  animation: wiggle 0.3s ease;
+  animation: lift 0.3s ease forwards;
 }
 
 .sidebar nav button.active {
-  background-color: #0056d2;
-  font-weight: 600;
-  animation: bounce 0.3s ease;
+  background-color: #4c956c; /* Lighter teal */
+  font-weight: 500;
 }
 
 /* Main content area */
@@ -185,7 +236,7 @@ body {
   margin-left: 260px;
   flex: 1;
   padding: 2rem;
-  background-color: #f5f7fa;
+  background: #fff;
   animation: fadeIn 0.7s ease-out;
 }
 
@@ -195,36 +246,43 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #e6e9f0 0%, #f5f7fa 100%);
+  background: #f9f9fb;
   padding: 1rem;
+  position: relative;
 }
 
 .login-form {
-  background-color: #ffffff;
+  background: #fff;
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   width: 100%;
   max-width: 400px;
+  border: 1px solid #e0e0e0;
   animation: fadeIn 0.5s ease-out;
 }
 
 .login-form h2 {
   font-size: 1.8rem;
   margin-bottom: 1.5rem;
-  color: #003087;
+  color: #2c6e49;
   text-align: center;
-  font-weight: 600;
+  font-weight: 500;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid #2c6e49;
+  animation: typing 1.5s steps(15, end) forwards, blink 0.75s step-end infinite;
 }
 
 .login-form .error {
-  color: #d32f2f;
+  color: #d9534f;
   margin-bottom: 1rem;
   font-size: 0.9rem;
   text-align: center;
-  background-color: #ffeeee;
+  background: #f9f9fb;
   padding: 0.5rem;
   border-radius: 4px;
+  border-left: 4px solid #d9534f;
 }
 
 .login-form div {
@@ -234,7 +292,7 @@ body {
 .login-form label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #000000;
+  color: #333;
   font-weight: 500;
   font-size: 0.9rem;
 }
@@ -242,25 +300,26 @@ body {
 .login-form input {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #d9d9d9;
+  border: 1px solid #ccc;
   border-radius: 6px;
   box-sizing: border-box;
-  color: #000000;
+  color: #333;
   font-size: 0.9rem;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background: #fff;
 }
 
 .login-form input:focus {
   outline: none;
-  border-color: #003087;
-  box-shadow: 0 0 8px rgba(0, 48, 135, 0.2);
+  border-color: #2c6e49;
+  box-shadow: 0 0 8px rgba(44, 110, 73, 0.2);
 }
 
 .login-form button {
   width: 100%;
   padding: 0.75rem;
-  background: linear-gradient(90deg, #003087 0%, #0040b0 100%);
-  color: white;
+  background: #2c6e49;
+  color: #fff;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -270,43 +329,56 @@ body {
   gap: 0.5rem;
   font-size: 1rem;
   font-weight: 500;
-  transition: background 0.3s ease, transform 0.1s ease;
-  min-height: 44px;
+  transition: background 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .login-form button:hover {
-  background: linear-gradient(90deg, #0056d2 0%, #0066e6 100%);
-  animation: bounce 0.3s ease;
+  background: #4c956c;
+  animation: glow 1s infinite;
 }
 
-.login-form button:active {
-  animation: pulse 0.2s ease;
+.login-form button:active::after {
+  content: "";
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  animation: ripple 0.5s ease-out;
 }
 
 /* Section styles */
 .section {
   padding: 1.5rem;
-  background-color: #ffffff;
+  background: #fff;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   animation: fadeIn 0.7s ease-out;
   margin-bottom: 1.5rem;
+  border: 1px solid #e0e0e0;
+  position: relative;
 }
 
 .section h2 {
   font-size: 1.6rem;
   margin-bottom: 1.5rem;
-  color: #003087;
-  font-weight: 600;
+  color: #2c6e49;
+  font-weight: 500;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid #2c6e49;
+  animation: typing 1.5s steps(20, end) forwards, blink 0.75s step-end infinite;
 }
 
 .section h3 {
   font-size: 1.2rem;
   margin-bottom: 1rem;
-  color: #000000;
+  color: #333;
   font-weight: 500;
   display: flex;
   align-items: center;
@@ -316,13 +388,14 @@ body {
 /* Form styles */
 .form-container,
 .assignment-form {
-  background-color: #fafafa;
+  background: #f9f9fb;
   padding: 1.5rem;
   border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
   margin-bottom: 1.5rem;
   width: 100%;
   max-width: 600px;
+  border: 1px solid #e0e0e0;
 }
 
 .form-group {
@@ -332,7 +405,7 @@ body {
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #000000;
+  color: #333;
   font-weight: 500;
   font-size: 0.9rem;
 }
@@ -343,20 +416,21 @@ body {
   width: 100%;
   padding: 0.75rem;
   margin-bottom: 0.75rem;
-  border: 1px solid #d9d9d9;
+  border: 1px solid #ccc;
   border-radius: 6px;
   box-sizing: border-box;
-  color: #000000;
+  color: #333;
   font-size: 0.9rem;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background: #fff;
 }
 
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #003087;
-  box-shadow: 0 0 8px rgba(0, 48, 135, 0.2);
+  border-color: #2c6e49;
+  box-shadow: 0 0 8px rgba(44, 110, 73, 0.2);
 }
 
 .form-group select[multiple] {
@@ -372,8 +446,8 @@ body {
 .submit-button,
 .primary-button {
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(90deg, #003087 0%, #0040b0 100%);
-  color: white;
+  background: #2c6e49;
+  color: #fff;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -382,29 +456,35 @@ body {
   gap: 0.5rem;
   font-size: 0.95rem;
   font-weight: 500;
-  transition: background 0.3s ease, transform 0.1s ease;
-  min-height: 44px;
+  transition: background 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .form-container button:hover,
 .submit-button:hover,
 .primary-button:hover {
-  background: linear-gradient(90deg, #0056d2 0%, #0066e6 100%);
-  animation: bounce 0.3s ease;
+  background: #4c956c;
+  animation: glow 1s infinite;
 }
 
-.form-container button:active,
-.submit-button:active,
-.primary-button:active {
-  animation: pulse 0.2s ease;
+.form-container button:active::after,
+.submit-button:active::after,
+.primary-button:active::after {
+  content: "";
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  animation: ripple 0.5s ease-out;
 }
 
 .form-container button:disabled,
 .submit-button:disabled,
 .primary-button:disabled {
-  background: #cccccc;
+  background: #ccc;
   cursor: not-allowed;
-  transform: none;
 }
 
 .submit-button .icon {
@@ -414,11 +494,12 @@ body {
 /* Table styles */
 .table-container,
 .assignments-table {
-  background-color: #ffffff;
+  background: #fff;
   padding: 1.5rem;
   border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
   overflow-x: auto;
+  border: 1px solid #e0e0e0;
 }
 
 .table-container table,
@@ -427,6 +508,9 @@ body {
   border-collapse: separate;
   border-spacing: 0;
   min-width: 600px;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .table-container th,
@@ -440,9 +524,9 @@ body {
 
 .table-container th,
 .assignments-table th {
-  background: linear-gradient(90deg, #f0f2f5 0%, #e6e9f0 100%);
-  color: #000000;
-  font-weight: 600;
+  background: #2c6e49;
+  color: #fff;
+  font-weight: 500;
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -454,7 +538,8 @@ body {
 .table-container td,
 .assignments-table td {
   font-size: 0.9rem;
-  color: #333333;
+  color: #333;
+  transition: background-color 0.2s ease;
 }
 
 .table-container tr:last-child td,
@@ -464,8 +549,7 @@ body {
 
 .table-container tr:hover td,
 .assignments-table tr:hover td {
-  background-color: #f8f9fb;
-  transition: background-color 0.2s ease;
+  background-color: #f9f9fb;
 }
 
 /* Responsive table styles */
@@ -488,6 +572,8 @@ body {
     display: block;
     margin-bottom: 1rem;
     border-bottom: 1px solid #e0e0e0;
+    background: #fff;
+    border-radius: 6px;
   }
 
   .table-container td,
@@ -497,7 +583,8 @@ body {
     padding: 0.5rem;
     position: relative;
     border: none;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #e0e0e0;
+    background: #f9f9fb;
   }
 
   .table-container td:before,
@@ -505,10 +592,10 @@ body {
     content: attr(data-label);
     position: absolute;
     left: 0.5rem;
-    font-weight: bold;
+    font-weight: 500;
     text-transform: uppercase;
     font-size: 0.8rem;
-    color: #333;
+    color: #2c6e49;
   }
 
   .table-container td:last-child,
@@ -521,20 +608,22 @@ body {
 .error-message,
 .error,
 .alert.error {
-  color: #d32f2f;
+  color: #d9534f;
   margin-bottom: 1rem;
   font-size: 0.9rem;
-  background-color: #ffeeee;
+  background: #f9f9fb;
   padding: 0.75rem;
   border-radius: 4px;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  border-left: 4px solid #d9534f;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .alert.success {
-  background-color: #e6ffed;
-  color: #2e7d32;
+  background: #f9f9fb;
+  color: #2c6e49;
   padding: 0.75rem;
   margin-bottom: 1rem;
   border-radius: 6px;
@@ -542,11 +631,14 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  border-left: 4px solid #2c6e49;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease-out;
 }
 
 /* Loading styles */
 .loading {
-  color: #666666;
+  color: #333;
   font-style: italic;
   text-align: center;
   padding: 1.5rem;
@@ -555,15 +647,20 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  background: #f9f9fb;
+  border-radius: 6px;
 }
 
 .no-assignments,
 .no-users {
-  color: #666666;
+  color: #333;
   font-style: italic;
   text-align: center;
   padding: 1.5rem;
   font-size: 0.9rem;
+  background: #f9f9fb;
+  border-radius: 6px;
+  animation: fadeIn 0.7s ease-out;
 }
 
 /* Loading spinner */
@@ -574,18 +671,21 @@ body {
   justify-content: center;
   padding: 2rem;
   min-height: 200px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .loading-spinner .book-icon {
   font-size: 2.5rem;
-  color: #003087;
-  animation: spinBook 1.5s linear infinite;
+  color: #2c6e49;
+  animation: spinBook 1.5s linear infinite, float 3s infinite alternate;
 }
 
 .loading-spinner p {
   margin-top: 0.5rem;
   font-size: 1rem;
-  color: #666666;
+  color: #333;
   font-style: italic;
 }
 
@@ -606,7 +706,7 @@ body {
 
   .sidebar.open {
     transform: translateX(0);
-    animation: slideIn 0.3s ease;
+    animation: fadeIn 0.3s ease;
   }
 
   .main-content {
@@ -800,5 +900,143 @@ body {
 
   .main-content {
     margin-left: 260px;
+  }
+}
+
+/* Add this to your CSS */
+.forgot-password-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.forgot-password-link a {
+  color: #2c6e49;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  background: rgba(44, 110, 73, 0.1);
+}
+
+.forgot-password-link a:hover {
+  color: #4c956c;
+  background: rgba(44, 110, 73, 0.15);
+  text-decoration: underline;
+  animation: lift 0.3s ease forwards;
+}
+
+.forgot-password-link a:active {
+  transform: scale(0.98);
+}
+
+/* If you want to add an icon */
+.forgot-password-link a::before {
+  content: "?";
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
+  background: #2c6e49;
+  color: white;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 1.2em;
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+.forgot-password-link a:hover::before {
+  background: #4c956c;
+}
+
+/* Add this to your existing CSS */
+.forgot-password-form {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 400px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.forgot-password-form h2 {
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.forgot-password-form h2 a {
+  color: #2c6e49;
+  text-decoration: none;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.forgot-password-form h2 a:hover {
+  color: #4c956c;
+  text-decoration: underline;
+}
+
+.forgot-password-form h2 svg {
+  transition: transform 0.3s ease;
+}
+
+.forgot-password-form h2 a:hover svg {
+  transform: translateX(-3px);
+}
+
+.forgot-password-form button[type="submit"] {
+  width: 100%;
+  padding: 0.75rem;
+  background: #2c6e49;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background 0.3s ease;
+  margin-top: 1rem;
+}
+
+.forgot-password-form button[type="submit"]:hover {
+  background: #4c956c;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .forgot-password-form {
+    padding: 1.5rem;
+    max-width: 90%;
+  }
+
+  .forgot-password-form h2 a {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .forgot-password-form {
+    padding: 1rem;
+  }
+
+  .forgot-password-form h2 a {
+    font-size: 0.9rem;
+  }
+
+  .forgot-password-form button[type="submit"] {
+    padding: 0.5rem;
+    font-size: 0.9rem;
   }
 }

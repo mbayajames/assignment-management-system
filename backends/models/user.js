@@ -3,6 +3,8 @@ module.exports = (mongoose) => {
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     role: { type: String, enum: ["admin", "student"], required: true },
+    resetToken: { type: String },
+    resetTokenExpiry: { type: Date },
   });
 
   return mongoose.model("User", userSchema);

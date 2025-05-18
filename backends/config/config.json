@@ -1,0 +1,26 @@
+{
+    "app": {
+      "name": "Assignment Management System",
+      "version": "1.0.0",
+      "env": "development",
+      "port": 3000,
+      "baseUrl": "http://localhost:3000"
+    },
+    "jwt": {
+      "secret": "your_jwt_secret_key",
+      "expiresIn": "1d"
+    },
+    "email": {
+      "service": "gmail",
+      "user": "your_email@example.com",
+      "pass": "your_email_password"
+    },
+    "db": {
+      "uri": "mongodb://localhost:27017/assignment_management"
+    },
+    "rateLimit": {
+      "windowMs": 900000,
+      "max": 100
+    }
+  }
+  

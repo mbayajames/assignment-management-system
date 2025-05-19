@@ -1,7 +1,7 @@
 Assignment Management System
 Overview
 This is a full-stack Assignment Management System built with a Node.js/Express/MongoDB backend and a React frontend. The backend serves both the API and the frontend on http://localhost:3000.
-Project Structure
+Project Structures
 assignment-management-system/
 ├── backends/
 │   ├── config/
